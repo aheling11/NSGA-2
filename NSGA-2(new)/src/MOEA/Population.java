@@ -25,6 +25,24 @@ public class Population {
 		pop.clear();
 	}
 
+public void ifsomthingsame() {
+	for (int i = 0; i < pop.size(); i++) {
+		for (int j = 0; j < pop.size(); j++) {
+			if ( i == j) {
+				continue;
+			}
+			if (pop.get(i).fx[0] == pop.get(j).fx[0]) {
+				printFx();
+
+				System.out.printf("the pop.%d is same as pop.%d\n",i,j);
+				System.out.printf("the pop.%d is %f\n",i,pop.get(i).fx[0]);
+				System.out.printf("the pop.%d is %f\n",j,pop.get(j).fx[0]);
+				Mytools.pauseTheProgram("按n继续");
+				break;
+			}
+		}
+	}
+}
 	public void printPopVarible() {
 		System.out.println("population.varible:");
 		for (int i = 0; i < pop.size(); i++) {
@@ -50,6 +68,19 @@ public class Population {
 		System.out.println("population:fx["+k+"]");
 		for (int i = 0; i < pop.size(); i++) {
 			System.out.println(pop.get(i).fx[k]);
+		}
+	}
+
+	public void printFx(String string) {
+		System.out.println(string+":"+"population:fx");
+		for (int i = 0; i < pop.size(); i++) {
+			System.out.println(pop.get(i).fx[0]+" "+pop.get(i).fx[1]);
+		}
+	}
+	public void printFx() {
+		System.out.println("population:fx");
+		for (int i = 0; i < pop.size(); i++) {
+			System.out.println(pop.get(i).fx[0]+" "+pop.get(i).fx[1]);
 		}
 	}
 

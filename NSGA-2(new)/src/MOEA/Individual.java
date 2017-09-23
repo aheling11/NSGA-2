@@ -51,26 +51,27 @@ public class Individual {
 		for (int i = 0; i < lchromarr; i++) {
 			variable = -100000 + (chromarr[0] * 200000)/(Math.pow(2, lchrom)-1);
 		}
+
 		fx[0] = variable*variable;
 		fx[1] = (variable-2)*(variable-2);
 	}
-	public Individual copyself() {
-		Individual tIndividual = new Individual();
-		tIndividual.variable = variable;
-		tIndividual.gtemp = gtemp;
-		tIndividual.ni = ni;
-		for (int i = 0; i < si.size(); i++) {
-			tIndividual.si.add(si.get(i));
-		}
-		for (int i = 0; i < chromarr.length; i++) {
-			tIndividual.chromarr[i] = chromarr[i];
-		}
-		for (int i = 0; i < fx.length; i++) {
-			tIndividual.fx[i] = fx[i];
-		}
-		tIndividual.crowDis = crowDis;
-		return tIndividual;
-	}
+//	public Individual copyself() {
+//		Individual tIndividual = new Individual();
+//		tIndividual.variable = variable;
+//		tIndividual.gtemp = gtemp;
+//		tIndividual.ni = ni;
+//		for (int i = 0; i < si.size(); i++) {
+//			tIndividual.si.add(si.get(i));
+//		}
+//		for (int i = 0; i < chromarr.length; i++) {
+//			tIndividual.chromarr[i] = chromarr[i];
+//		}
+//		for (int i = 0; i < fx.length; i++) {
+//			tIndividual.fx[i] = fx[i];
+//		}
+//		tIndividual.crowDis = crowDis;
+//		return tIndividual;
+//	}
 
 	public void writtenChrom() {
 		for (int i = 0; i < chromarr.length; i++) {

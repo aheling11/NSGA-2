@@ -2,7 +2,7 @@ package MOEA;
 
 public class Generation {
 	private double pcross = 0.8;
-	private double pmutation = 0.05;
+	private double pmutation = 0.1;
 
 	public Generation() {
 		// TODO Auto-generated constructor stub
@@ -12,23 +12,18 @@ public class Generation {
 		int popsize = p.pop.size();
 		Population tPopulation = new Population();
 		tPopulation.inipop(popsize);
-		int mate1 = select(p);
-		int mate2 = select(p);
-		while ( mate1 == mate2) {
-			mate1 = select(p);
-		}
+//		tPopulation.printFx("tpop");
 		int i = 0;
 		do {
+			int mate1 = select(p);
+			int mate2 = select(p);
+			while ( mate1 == mate2) {
+				mate1 = select(p);
+			}
 			crossover(p.pop.get(mate1), p.pop.get(mate2), tPopulation.pop.get(i), tPopulation.pop.get(i+1));
 			mutation(tPopulation.pop.get(i));
 			mutation(tPopulation.pop.get(i+1));
-//			if (check_dominate(tPopulation.pop.get(i), p.pop.get(mate1)) == 1) {
-//				tPopulation.pop.set(i, p.pop.get(mate1).copyself() );
-//			}
-//
-//			if (check_dominate(tPopulation.pop.get(i), p.pop.get(mate2)) == 1) {
-//				tPopulation.pop.set(i+1, p.pop.get(mate2).copyself() );
-//			}
+//			tPopulation.printFx("tPop");
 			i += 2;
 		} while (i<popsize-1);
 
@@ -38,17 +33,22 @@ public class Generation {
 
 
 	private void mutation(Individual individual) {
-		Myrandom myrandom = new Myrandom();
-		int mask = 0;
-		int temp = 1;
-		for (int i = 0; i < individual.lchrom-1; i++) {
-			if (myrandom.flip(pmutation)) {
-				mask = mask | (temp<<i);
+		do {
+			Myrandom myrandom = new Myrandom();
+			int mask = 0;
+			int temp = 1;
+			for (int i = 0; i < individual.lchrom-1; i++) {
+				if (myrandom.flip(pmutation)) {
+					mask = mask | (temp<<i);
+				}
 			}
-		}
 
-		individual.chromarr[0] = individual.chromarr[0] ^ mask;
-		individual.obj();
+			individual.chromarr[0] = individual.chromarr[0] ^ mask;
+			individual.obj();
+			if (Math.abs(individual.variable) > 100000) {
+				System.out.println("variable is out of range:"+individual.variable);
+			}
+		} while ( Math.abs(individual.variable) > 100000 );
 	}
 
 	/**
@@ -72,7 +72,8 @@ public class Generation {
 				child1.chromarr[i] = (parent1.chromarr[i]&mask | parent2.chromarr[i]&(~mask));
 				child2.chromarr[i] = (parent1.chromarr[i]&(~mask) | parent2.chromarr[i]&mask);
 			}
-		} else {
+		}
+		else {
 			for (int i = 0; i < number_of_object; i++) {
 				child1.chromarr[i] = parent1.chromarr[i];
 				child2.chromarr[i] = parent2.chromarr[i];
@@ -89,12 +90,13 @@ public class Generation {
 		int pick[] = new int[size];
 		for (int i = 0; i < size; i++) {
 			pick[i] = myrandom.rnd(0, p.pop.size()-1);
+
 		}
 		//排序pick
 		int flag = check_dominate(p.pop.get(pick[0]), p.pop.get(pick[1]));
-		if ( flag == 1) {
+		if ( flag == 0) {
 			return pick[0];
-		} else if( flag == 0) {
+		} else if( flag == 1) {
 			return pick[1];
 		} else {
 			return pick[0];
@@ -130,6 +132,13 @@ public class Generation {
 			return 1;
 		}
 
+		if (a.crowDis > b.crowDis) {
+			return 0;
+		}
+
+		if (a.crowDis < b.crowDis) {
+			return 1;
+		}
 		return -1;
 
 	}

@@ -10,6 +10,7 @@ import java.util.logging.Handler;
 import javax.swing.text.DefaultEditorKit.CutAction;
 import javax.xml.ws.AsyncHandler;
 
+
 public class MOEA {
 	Population qPopulation = new Population();
 	Population rPopulation = new Population();
@@ -17,7 +18,7 @@ public class MOEA {
 	Population nPopulation = new Population();
 	Population F_ = new Population();
 	ArrayList<Population>  PF = new ArrayList<Population>();
-	int popsize = 360;
+	int popsize = 100;
 	int maxgen = 100;
 	int gen = 0;
 	int i = 0;
@@ -25,13 +26,20 @@ public class MOEA {
 	String bb= "";
 	public MOEA() {
 		Generation generation = new Generation();
-		qPopulation.inipop(popsize);
 		pPopulation.inipop(popsize);
+//		qPopulation.printFx("qPop(ini):");
+//		pPopulation.printFx("pPop(ini):");
 		qPopulation = generation.make_new_pop(pPopulation);
+//		qPopulation.printFx("qPop(ini):");
+//		pPopulation.printFx("pPop(ini):");
+		qPopulation.ifsomthingsame();
 		for (int k = 0; k < maxgen; k++) {
 			statistics();
 			rPopulation.pop.clear();
 			rPopulation = merge(pPopulation, qPopulation);
+//			rPopulation.printFx("rPop");
+			pPopulation.pop.clear();
+			qPopulation.pop.clear();
 			PF.clear();
 			PF = fast_nondominated_sort(rPopulation);
 			nPopulation.pop.clear();
@@ -43,30 +51,30 @@ public class MOEA {
 				if (F_.pop.size() + nPopulation.pop.size() > popsize || (F_.pop.size()+nPopulation.pop.size() == popsize & F_.pop.size()==0)) {
 					break;
 				}
-
 				crowding_distance_assignment(F_);
 				Sort_F_(F_);
 				nPopulation = merge(nPopulation, F_);
+				F_.pop.clear();
 				i++;
 				F_ = PF.get(i);
 			}
 			crowding_distance_assignment(F_);
 			Sort_F_(F_);
 			nPopulation = merge(nPopulation, cutF_(F_));
+			F_.pop.clear();
+			qPopulation.pop.clear();
+//			nPopulation.printFx("npopulation");
 			qPopulation = generation.make_new_pop(nPopulation);
-			pPopulation.pop.clear();
+//			qPopulation.printFx("qpopulation");
+			qPopulation.ifsomthingsame();
 			pPopulation = merge(pPopulation, nPopulation);
 
-
 		}
-
+		nPopulation = pPopulation;
 		for (int i = 0; i < nPopulation.pop.size(); i++) {
 			System.out.println(nPopulation.pop.get(i).fx[0]+" "+nPopulation.pop.get(i).fx[1]);
 			Double temDouble1 = new Double(nPopulation.pop.get(i).fx[0]);
 			Double temDouble2 = new Double(nPopulation.pop.get(i).fx[1]);
-			if (temDouble1 > 5 || temDouble2 > 5) {
-				continue;
-			}
 			aa = aa+temDouble1.toString();
 			aa += " ";
 			aa += temDouble2.toString();
@@ -159,6 +167,7 @@ public class MOEA {
 			p.pop.get(N-1).crowDis =  Double.MAX_VALUE;
 		}
 	}
+
 	@SuppressWarnings("unchecked")
 	private void sortOfsubm(Population p) {
 		Collections.sort(p.pop, new GtempComparator());
